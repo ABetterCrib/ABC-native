@@ -6,7 +6,8 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React from 'react'
+import BleManager from './bluetooth'
 import Api from './api';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
@@ -19,9 +20,21 @@ export default function App() {
       Api.lightOff().then((response) => response.json()).then((data) => console.log(data.msg)).catch((error) => console.log(error));
   }
 
-  const onActivateBluetooth = () => {
+  const onActivateBluetooth = async () => {
     console.log('Activating');
-    // bluetooth.enableBluetooth();
+    BleManager.enableBluetooth()
+    .then(() => {
+      console.log('Bluetooth is enabled');
+    })
+    .catch((error) => {
+      console.log("Blueooth is not enabled");
+    });
+    BleManager.start({ showAlert: false }).then(() => {
+      console.log("Module initialized");
+    });
+    BleManager.scan([], 10, true).then(() => {
+      console.log('Scan set to run for 10 seconds');
+    });
   }
 
   const LightControl = ( onPress ) => {
