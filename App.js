@@ -6,12 +6,87 @@
  * @flow strict-local
  */
 
-import React from 'react'
-import BleManager from './bluetooth'
+import React, { useState, useEffect } from 'react'
 import Api from './api';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import Diagnostics from './components/molecules/diagnostics';
+import Controls from './components/molecules/controls';
+import Header from './components/molecules/header'
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  NativeModules,
+  NativeEventEmitter,
+  Platform,
+  PermissionsAndroid
+} from 'react-native';
+
+import BleManager from 'react-native-ble-manager'
+const BleManagerModule = NativeModules.BleManager;
+const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export default function App() {
+  const [peripherals, setPeripherals] = useState([]);
+  const [isScanning, setIsScanning] = useState(false);
+
+  const handleDiscoverPeripheral = (peripheral) => {
+    console.log('Got ble peripheral', peripheral);
+    if (!peripheral.name) {
+      peripheral.name = 'NO NAME';
+    }
+    setPeripherals(peripherals.push(peripheral));
+  }
+
+  const handleUpdateValueForCharacteristic = (data) => {
+    console.log('Received data from ' + data.peripheral + ' characteristic ' + data.characteristic, data.value);
+  }
+
+  const handleStopScan = () => {
+    console.log('Scan is stopped');
+    peripherals.forEach(periph => {
+      if (periph.name !== 'NO NAME') console.log(periph.name)
+      if (periph.id === 'b8:27:eb:68:3d:50' || periph.id ===  'b8:27:eb:3d:68:05') console.log('-----here------', periph.name);
+    })
+    setIsScanning(false);
+  }
+
+  const handleDisconnectedPeripheral = (data) => {
+    console.log('Disconnected from ' + data.peripheral);
+  }
+
+  useEffect(() => {
+    BleManager.start({showAlert: false});
+
+    const subscription1 = bleManagerEmitter.addListener('BleManagerDiscoverPeripheral', handleDiscoverPeripheral);
+    const subscription2 = bleManagerEmitter.addListener('BleManagerStopScan', handleStopScan );
+    const subscription3 = bleManagerEmitter.addListener('BleManagerDisconnectPeripheral', handleDisconnectedPeripheral );
+    const subscription4 = bleManagerEmitter.addListener('BleManagerDidUpdateValueForCharacteristic', handleUpdateValueForCharacteristic );
+
+    if (Platform.OS === 'android' && Platform.Version >= 23) {
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
+          if (result) {
+            console.log("Permission is OK");
+          } else {
+            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((result) => {
+              if (result) {
+                console.log("User accept");
+              } else {
+                console.log("User refuse");
+              }
+            });
+          }
+      });
+    }
+
+    return (() => {
+      console.log('unmount');
+      subscription1.remove();
+      subscription2.remove();
+      subscription3.remove();
+      subscription4.remove();
+    })
+  }, []);
 
   const onChangeLight = (type) => {
     if (type === 'on')
@@ -22,19 +97,12 @@ export default function App() {
 
   const onActivateBluetooth = async () => {
     console.log('Activating');
-    BleManager.enableBluetooth()
-    .then(() => {
-      console.log('Bluetooth is enabled');
-    })
-    .catch((error) => {
-      console.log("Blueooth is not enabled");
-    });
-    BleManager.start({ showAlert: false }).then(() => {
-      console.log("Module initialized");
-    });
-    BleManager.scan([], 10, true).then(() => {
-      console.log('Scan set to run for 10 seconds');
-    });
+    await BleManager.enableBluetooth()
+    console.log('Bluetooth is enabled');
+    await BleManager.start({ showAlert: false })
+    console.log("Module initialized");
+    await BleManager.scan([], 40, true)
+    setIsScanning(true)
   }
 
   const LightControl = ( onPress ) => {
@@ -75,8 +143,9 @@ export default function App() {
 
   return (
     <>
-      {LightControl(onChangeLight)}
-      {bluetoothControl(onActivateBluetooth)}
+      <Header />
+      <Controls />
+      <Diagnostics />
     </>
   );
 }
