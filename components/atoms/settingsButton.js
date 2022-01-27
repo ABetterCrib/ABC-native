@@ -1,21 +1,21 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Colors from '../../global/styles/colors';
+import { TouchableOpacity, StyleSheet, Image } from 'react-native';
+import Size from '../../global/constants/size';
 
 const SettingsButton = (props) => {
     if (props.style === null) props.style = {};
 
     return(
         <TouchableOpacity onPress = {() => alert('Pressed Settings')}>
-            <Text style = {[styles.settings, props.style]}>O</Text>
+            <Image source={require('../../assets/settings.png')} style={[styles.settings, props.style]} />
         </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
     settings: {
-        color: Colors.black,
-        fontSize: 34,
+        height: Size.headerHeight * 0.55,
+        width: Size.headerHeight * 0.55,
     }
 });
 

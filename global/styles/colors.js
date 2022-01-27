@@ -6,7 +6,8 @@ const Colors = {
     textBackground: '#808080',
     popupBackground: '#DBDBDB',
     popupTextBackground: '#757474',
-    black: '#050505'
+    black: '#050505',
+    white: '#F5F5F5'
 }
 
 export default Colors
