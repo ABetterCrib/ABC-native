@@ -1,26 +1,19 @@
 import React from 'react';
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
-import Colors from '../../global/styles/colors';
-import Size from '../../global/constants/size';
+import Colors from '../global/styles/colors';
 
 const smallHeaderWidth = 120;
 
-const Diagnostics = (props) => {
-    return(
-        <View style={styles.diagnostics}>
-            <View style={styles.smallHeader}>
-                <Text style={styles.backgroundFont}>Diagnostics</Text>
-                <View style={styles.dividerBar} />
-            </View>
+const SmallHeader = (props) => {
+    return (
+        <View style={styles.smallHeader}>
+            <Text style={styles.backgroundFont}>{props.text}</Text>
+            <View style={styles.dividerBar} />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    diagnostics: {
-        backgroundColor: Colors.white,
-        height: Size.diagnosticsHeight,
-    },
     smallHeader: {
         flexDirection: 'row',
         marginTop: 10
@@ -39,4 +32,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Diagnostics;
+export default SmallHeader;

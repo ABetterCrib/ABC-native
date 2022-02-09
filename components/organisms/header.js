@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Colors from '../../global/styles/colors';
-import SettingsButton from '../atoms/settingsButton';
+import SettingsButton from '../molecules/settingsButton';
 import Size from '../../global/constants/size'
 
 const Header = (props) => {

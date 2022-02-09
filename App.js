@@ -8,9 +8,9 @@
 
 import React, { useState, useEffect } from 'react'
 import Api from './api';
-import Diagnostics from './components/molecules/diagnostics';
-import Controls from './components/molecules/controls';
-import Header from './components/molecules/header'
+import Controls from './components/organisms/controls';
+import Diagnostics from './components/organisms/diagnostics';
+import Header from './components/organisms/header'
 import {
   Text,
   View,
@@ -27,27 +27,44 @@ const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export default function App() {
-  const [peripherals, setPeripherals] = useState([]);
+  let peripherals = [];
   const [isScanning, setIsScanning] = useState(false);
+  const [connectWith, setConnectWith] = useState('Wait...');
+  const [update, setUpdate] = useState(true);
 
   const handleDiscoverPeripheral = (peripheral) => {
-    console.log('Got ble peripheral', peripheral);
-    if (!peripheral.name) {
-      peripheral.name = 'NO NAME';
+    if (peripheral.name) {
+      console.log('Got ble peripheral', peripheral.name, peripheral.id);
+      peripherals.push([peripheral.name, peripheral.id]);
+      setUpdate(!update);
     }
-    setPeripherals(peripherals.push(peripheral));
   }
 
   const handleUpdateValueForCharacteristic = (data) => {
     console.log('Received data from ' + data.peripheral + ' characteristic ' + data.characteristic, data.value);
   }
 
+  const handleConnect = (id) => {
+    return BleManager.connect(id).then(() => {
+      console.log("Connected");
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
   const handleStopScan = () => {
     console.log('Scan is stopped');
+    let found = false;
     peripherals.forEach(periph => {
-      if (periph.name !== 'NO NAME') console.log(periph.name)
-      if (periph.id === 'b8:27:eb:68:3d:50' || periph.id ===  'b8:27:eb:3d:68:05') console.log('-----here------', periph.name);
+      if (!found && periph[0] == 'ABC') {
+        console.log('connecting...');
+        setConnectWith(periph[1]);
+        handleConnect(periph[1]);
+        found = true;
+      }
     })
+    console.log('finished checking peripherals');
+    peripherals = [];
     setIsScanning(false);
   }
 
@@ -101,7 +118,7 @@ export default function App() {
     console.log('Bluetooth is enabled');
     await BleManager.start({ showAlert: false })
     console.log("Module initialized");
-    await BleManager.scan([], 40, true)
+    await BleManager.scan([], 15, true)
     setIsScanning(true)
   }
 
