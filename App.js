@@ -1,102 +1,11 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from 'react';
-import Api from './api';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import React from 'react'
+import Home from './screens/home.screen'
+import User from './api/user';
 
 export default function App() {
-
-  const onChangeLight = (type) => {
-    if (type === 'on')
-      Api.lightOn().then((response) => response.json()).then((data) => console.log(data.msg)).catch((error) => console.log(error));
-    else if (type === 'off')
-      Api.lightOff().then((response) => response.json()).then((data) => console.log(data.msg)).catch((error) => console.log(error));
-  }
-
-  const onActivateBluetooth = () => {
-    console.log('Activating');
-    // bluetooth.enableBluetooth();
-  }
-
-  const LightControl = ( onPress ) => {
-    return (
-      <View style={[styles.container]}>
-        <View style={[styles.margin]}>
-          <TouchableOpacity
-            onPress={() => onPress('on')}
-            style={[styles.lightOn]}
-          >
-            <Text style={styles.buttonText}>Light on</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.margin]}>
-          <TouchableOpacity
-            onPress={() => onPress('off')}
-            style={[styles.lightOff]}
-          >
-            <Text style={styles.buttonText}>Light off</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  };
-
-  const bluetoothControl = ( onPress ) => {
-    return (
-      <View style={[styles.margin]}>
-          <TouchableOpacity
-            onPress={onPress}
-            style={[styles.lightOn]}
-          >
-            <Text style={styles.buttonText}>Bluetooth</Text>
-          </TouchableOpacity>
-        </View>
-    )
-  }
+  User.fill();
 
   return (
-    <>
-      {LightControl(onChangeLight)}
-      {bluetoothControl(onActivateBluetooth)}
-    </>
+    <Home />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  margin: {
-    margin: 10,
-  },
-  lightOn: {
-    backgroundColor: 'blue',
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  lightOff: {
-    backgroundColor: 'black',
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  colorBlue: {
-    backgroundColor: 'blue'
-  },
-  buttonText: {
-    fontSize: 15,
-    paddingLeft: 20,
-    paddingRight: 20,
-    color: 'white'
-  }
-});

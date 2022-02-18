@@ -1,5 +1,5 @@
 const BASE_URL = 'http://153.106.229.84:3000';
-class Api {
+class Light {
   _callApi(url, options = {}) {
 
     const fetchOptions = {
@@ -26,4 +26,4 @@ class Api {
     return this._callApi('light/off', {method: 'POST'});
   }
 }
-export default new Api();
+export default new Light();
