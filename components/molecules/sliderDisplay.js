@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Size from '../../global/constants/size';
 import Colors from '../../global/styles/colors';
+import User from '../../api/user';
 
 const SliderDisplay = (props) => {
     const [textWidth, setTextWidth] = useState(0);
+    const { bpmlow, bpmhigh } = User;
+    const { bpm } = props;
 
     const color = {
         backgroundColor: Colors[props.color]
@@ -12,27 +15,30 @@ const SliderDisplay = (props) => {
     const colorText = {
         color: Colors[props.color]
     };
+    
     // These three points always show on the line
     const points = {
         low: {
             // Bpm is the value of where they are on the line
-            bpm: props.bpm >= props.bpmRange.low ? props.bpmRange.low : props.bpm,
+            bpm: bpm >= bpmlow ? bpmlow : bpm,
             // Measured is a boolean for whether it is a measured value or boundry value
-            measured: props.bpm >= props.bpmRange.low ? false : true,
+            measured: bpm >= bpmlow ? false : true,
         },
         mid: {
-            bpm: [props.bpm, props.bpmRange.low, props.bpmRange.high].sort((f, s) => f > s)[1],
-            measured: [props.bpm, props.bpmRange.low, props.bpmRange.high].sort()[1] === props.bpm ? true : false,
+            bpm: [bpm, bpmlow, bpmhigh].sort((f, s) => f > s)[1],
+            measured: [bpm, bpmlow, bpmhigh].sort((f, s) => f > s)[1] === bpm ? true : false,
         },
         high: {
-            bpm: props.bpm <= props.bpmRange.high ? props.bpmRange.high : props.bpm,
-            measured: props.bpm <= props.bpmRange.high ? false : true,
+            bpm: bpm <= bpmhigh ? bpmhigh : bpm,
+            measured: bpm <= bpmhigh ? false : true,
         },
     }
     // The style that places the middle circle in the right spot
     const circleMid = {
-        marginLeft: (points.mid.bpm - points.low.bpm) / (points.high.bpm - points.low.bpm) * Size.barLength + 20,
+        // marginLeft: (points.mid.bpm - points.low.bpm) / (points.high.bpm - points.low.bpm) * Size.barLength + 20,
+        marginLeft: 10,
     }
+
     const textLeft = {
         marginLeft: points.low.measured ? circleMid.marginLeft - 20 : 0,
     }
@@ -49,11 +55,11 @@ const SliderDisplay = (props) => {
             <View style={[styles.circle, styles.circleRight, color]} />
             <View style={[styles.circle, circleMid, color]} />
             {/* The text under the bar*/}
-            <TouchableOpacity onPress={props.changeBpm} style={[styles.textButton, textLeft]}>
-                <Text style={[styles.boundaryText, colorText]}>{props.bpmRange.low} bpm</Text>
+            <TouchableOpacity onPress={() => alert('yep')} style={[styles.textButton, textLeft]}>
+                <Text style={[styles.boundaryText, colorText]}>{bpmlow} bpm</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={props.changeBpm} style={[styles.textButton, textRight]}>
-                <Text style={[styles.boundaryText, colorText]}>{props.bpmRange.high} bpm</Text>
+            <TouchableOpacity onPress={() => alert('yep')} style={[styles.textButton, textRight]}>
+                <Text style={[styles.boundaryText, colorText]}>{bpmhigh} bpm</Text>
             </TouchableOpacity>
             {/* The text over the bar */}
             <View style={[styles.connectingBar, color, {marginLeft: points.low.measured ? 24 : (points.high.measured ? Size.barLength + 24 : circleMid.marginLeft + 4)}]}/>
@@ -62,7 +68,7 @@ const SliderDisplay = (props) => {
                 onLayout={(e) => setTextWidth(e.nativeEvent.layout.width)}
                 style={[styles.textbox, color, {marginLeft: points.low.measured ? 24 - textWidth / 2 : (points.high.measured ? Size.barLength - textWidth / 2 + 24 : circleMid.marginLeft - textWidth / 2 + 4)}]}
             >
-                <Text style={styles.textboxText}>{props.bpm}</Text>
+                <Text style={styles.textboxText}>{bpm}</Text>
             </View>
         </View>
     )

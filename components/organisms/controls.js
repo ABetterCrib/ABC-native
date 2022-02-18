@@ -1,16 +1,14 @@
 import React from 'react';
-import { Text, View, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
-import Colors from '../../global/styles/colors';
+import { View, StyleSheet, } from 'react-native';
+import SoundControl from '../../components/molecules/soundControl';
 import Size from '../../global/constants/size';
-import SmallHeader from '../../templates/smallHeader';
 import RockerControl from '../molecules/rockerControl';
 
 const Controls = (props) => {
 
-
     return(
         <View style={styles.controls}>
-            <SmallHeader text={'Controls'} />
+            <SoundControl />
             <RockerControl />
         </View>
     )
@@ -19,7 +17,6 @@ const Controls = (props) => {
 const styles = StyleSheet.create({
     controls: {
         height: Size.controlsHeight,
-        backgroundColor: Colors.white
     },
 });
 

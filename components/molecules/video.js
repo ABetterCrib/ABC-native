@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Size from '../../global/constants/size';
 
 const Video = (props) => {
@@ -10,11 +10,10 @@ const Video = (props) => {
 
 const styles = StyleSheet.create({
     box: {
-        width: Dimensions.get('window').width * 0.9,
+        width: '100%',
         height: Size.videoHeight,
         backgroundColor: 'gray',
         alignSelf: 'center',
-        marginTop: 10,
     }
 });
 

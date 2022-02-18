@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Easing, Animated, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Easing, Animated, TouchableOpacity, Image, Text } from 'react-native';
 import Size from '../../global/constants/size';
 import Colors from '../../global/styles/colors';
-import SliderDisplay from './sliderDisplay';
+import SliderDisplay from '../molecules/sliderDisplay';
 
 const heartbeatImages = {
     purple: require('../../assets/purple-heart.png'),
     red: require('../../assets/red-heart.png')
+}
+const arrowImages = {
+    purple: require('../../assets/purple-arrow.png'),
+    red: require('../../assets/red-arrow.png')
 }
 
 const Heartbeat = (props) => {
@@ -46,29 +50,44 @@ const Heartbeat = (props) => {
     }, [])
 
     return (
-        <View style={[styles.background, {backgroundColor: Colors[props.color.concat('Light')]}]}>
-            <TouchableOpacity style={styles.heart} onPress={props.changeBpm}>
-                <Animated.Image source={heartbeatImages[props.color]} style={animatedStyles}/>
+        <View style={styles.background}>
+            <Image source={heartbeatImages[props.color]} style={styles.heart} />
+            <Text style={styles.bpm}>116 bpm</Text>
+            <TouchableOpacity style={styles.arrowButton}>
+                <Image source={arrowImages[props.color]} style={styles.arrow}/>
             </TouchableOpacity>
-            <SliderDisplay color={props.color} bpm={props.bpm} bpmRange={props.bpmRange} changeBpm={props.changeBpm}/>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    arrow: {
+        width: 20,
+        height: 40,
+    },
+    arrowButton: {
+        height: 40,
+        width: 40,
+        marginTop: 25,
+        paddingLeft: 8,
+    },
     background: {
-        marginTop: 15,
-        flex: 1,
-        marginBottom: 40,
-        width: Dimensions.get('window').width * 0.9,
+        height: 200,
+        width: '100%',
         alignSelf: 'center',
-        borderRadius: 15,
         flexDirection: 'row',
     },
     heart: {
-        alignSelf: 'center',
-        marginRight: 5,
+        marginTop: 10,
+        width: 60 * 1.2,
+        height: 60,
     },
+    bpm: {
+        marginTop: 25,
+        marginLeft: 10,
+        fontSize: 25,
+        color: Colors.black
+    }
 });
 
 export default Heartbeat;
