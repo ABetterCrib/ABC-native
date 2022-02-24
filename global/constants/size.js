@@ -15,7 +15,6 @@ const marginWidthTotal = screenWidth * 0.1;
 const videoHeight = diagnosticsHeight * 0.5 - 20;
 const heartbeatHeight = diagnosticsHeight - videoHeight - 100;
 const heartWidth = heartbeatHeight * 0.63;
-const barLength = screenWidth - marginWidthTotal - heartWidth - 70;
 
 const Size = {
     headerHeight,
@@ -23,8 +22,7 @@ const Size = {
     diagnosticsHeight,
     videoHeight,
     heartbeatHeight,
-    heartWidth,
-    barLength
+    heartWidth
 }
 
 export default Size;

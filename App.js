@@ -1,11 +1,29 @@
-import React from 'react'
+// Run android with "npx react-native run-android"
+
+import React, { useState } from 'react'
 import Home from './screens/home.screen'
-import User from './api/user';
+import Welcome from './screens/welcome.screen'
 
 export default function App() {
-  User.fill();
+
+  const [screen, setScreen] = useState('Welcome');
+
+  const getScreen = () => {
+    if (screen === 'Welcome') {
+      return (
+        <Welcome setScreen={setScreen}/>
+      )
+    }
+    if (screen === 'Home') {
+      return  (
+        <Home />
+      )
+    }
+  }
 
   return (
-    <Home />
+    <>
+      {getScreen()}
+    </>
   );
 }
