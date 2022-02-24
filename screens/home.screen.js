@@ -9,6 +9,7 @@ import Controls from '../components/organisms/controls';
 import Video from '../components/molecules/video';
 import Heartbeat from '../components/organisms/heartbeat';
 import Size from '../global/constants/size';
+import user from '../api/user';
 import {
     Text,
     View,
@@ -27,11 +28,14 @@ import BleManager from 'react-native-ble-manager'
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-const Home = () => {
+const Home = ({ navigation }) => {
    let peripherals = [];
    const [isScanning, setIsScanning] = useState(false);
    const [connectWith, setConnectWith] = useState('Wait...');
    const [update, setUpdate] = useState(true);
+   const [bpm, setBpm] = useState(121);
+   const [bpmAlert, setBpmAlert] = useState(!(bpm > user.getBpmLow() && bpm < user.getBpmHigh()));
+   console.log(user.getBpmLow(), bpm, user.getBpmHigh());
 
     const handleDiscoverPeripheral = (peripheral) => {
         if (peripheral.name) {
@@ -123,29 +127,6 @@ const Home = () => {
         setIsScanning(true)
     }
 
-    const LightControl = ( onPress ) => {
-        return (
-            <View style={[styles.container]}>
-                <View style={[styles.margin]}>
-                    <TouchableOpacity
-                        onPress={() => onPress('on')}
-                        style={[styles.lightOn]}
-                    >
-                        <Text style={styles.buttonText}>Light on</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={[styles.margin]}>
-                    <TouchableOpacity
-                        onPress={() => onPress('off')}
-                        style={[styles.lightOff]}
-                    >
-                        <Text style={styles.buttonText}>Light off</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
-   };
-
     const bluetoothControl = ( onPress ) => {
         return (
             <View style={[styles.margin]}>
@@ -159,32 +140,43 @@ const Home = () => {
         )
     }
 
+    const colors = bpmAlert
+        ? ['#F3D0C5', '#D3D3E3', '#CBCBEC']
+        : ['#D3D3E3', '#CBCBEC'];
+    const locations = bpmAlert
+        ? [0.2, 0.4, 1]
+        : [0, 1];
+
+
     return (
         <>
         <Video />
-        <LinearGradient colors={['#D3D3E3', '#CBCBEC']} style={styles.background}>
-            <Heartbeat color={'purple'}/>
+        <LinearGradient colors={colors} locations={locations} style={styles.background}>
+            <Heartbeat bpm={bpm} setAlert={setBpmAlert}/>
             <Controls/>
             <CornerSettings />
         </LinearGradient>
-        {/* {bluetoothControl(onActivateBluetooth)} */}
         </>
     );
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        height: Dimensions.get('window').height - Size.videoHeight
+    },
+    buttonText: {
+        fontSize: 15,
+        paddingLeft: 20,
+        paddingRight: 20,
+        color: 'white'
+    },
+    colorBlue: {
+        backgroundColor: 'blue'
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    margin: {
-        margin: 10,
-    },
-    lightOn: {
-        backgroundColor: 'blue',
-        height: 50,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -194,19 +186,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    colorBlue: {
-        backgroundColor: 'blue'
+    lightOn: {
+        backgroundColor: 'blue',
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    buttonText: {
-        fontSize: 15,
-        paddingLeft: 20,
-        paddingRight: 20,
-        color: 'white'
+    margin: {
+        margin: 10,
     },
-    background: {
-        flex: 1,
-        height: Dimensions.get('window').height - Size.videoHeight
-    }
 });
 
 export default Home;

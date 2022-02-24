@@ -1,4 +1,5 @@
 /**
+ * Run android with "npx react-native run-android"
  * @format
  */
 

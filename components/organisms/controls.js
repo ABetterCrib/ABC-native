@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, } from 'react-native';
 import SoundControl from '../../components/molecules/soundControl';
-import Size from '../../global/constants/size';
 import RockerControl from '../molecules/rockerControl';
 
 const Controls = (props) => {
@@ -16,8 +15,11 @@ const Controls = (props) => {
 
 const styles = StyleSheet.create({
     controls: {
-        height: Size.controlsHeight,
-    },
+        width: '100%',
+        position: 'absolute',
+        alignSelf: 'center',
+        bottom: 50,
+   },
 });
 
 export default Controls;
