@@ -41,6 +41,7 @@ const BpmSlider = (props) => {
 
     const handleLowBpmChange = async (e) => {
         setChangeLeftBpm(false);
+        if (e.nativeEvent.text === '') return;
         const value = Number(e.nativeEvent.text.replace(/\D/g,''));
         if (value > 0 && value < bpmHigh) {
             setBpmLow(value);
@@ -49,12 +50,13 @@ const BpmSlider = (props) => {
             props.setAlert(bpm > user.getBpmHigh() || bpm < value);
             await user.pushBpmToDatabase();
         } else {
-            alert('Minimum BPM must be smaller than the maximum');
+            alert('Minimum BPM must be smaller than the maximum and greater than zero');
         }
     }
 
     const handleHighBpmChange = async (e) => {
         setChangeRightBpm(false);
+        if (e.nativeEvent.text === '') return;
         const value = Number(e.nativeEvent.text.replace(/\D/g,''));
         if (value > bpmLow) {
             setBpmHigh(value);
@@ -84,7 +86,7 @@ const BpmSlider = (props) => {
             )
         } else {
             return (
-                <TouchableOpacity onPress={() => setChangeLeftBpm(true)} style={[styles.textButton, textLeft, {marginTop: 81}]}>
+                <TouchableOpacity onPress={() => {if (!changeRightBpm) setChangeLeftBpm(true)}} style={[styles.textButton, textLeft, {marginTop: 81}]}>
                     <Text style={styles.boundaryText}>{bpmLow} bpm</Text>
                 </TouchableOpacity>
             )
@@ -108,7 +110,7 @@ const BpmSlider = (props) => {
             )
         } else {
             return (
-                <TouchableOpacity onPress={() => setChangeRightBpm(true)} style={[styles.textButton, textRight, {marginTop: 81}]}>
+                <TouchableOpacity onPress={() => {if (!changeLeftBpm) setChangeRightBpm(true)}} style={[styles.textButton, textRight, {marginTop: 81}]}>
                     <Text style={styles.boundaryText}>{bpmHigh} bpm</Text>
                 </TouchableOpacity>
             )
