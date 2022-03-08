@@ -4,21 +4,21 @@ import Colors from '../../global/styles/colors';
 import user from '../../api/user';
 
 const heartbeatImages = {
-    purple: require('../../assets/purple-heart.png'),
-    red: require('../../assets/red-heart.png')
+    purpleLight: require('../../assets/purple-heart-light.png'),
+    redLight: require('../../assets/red-heart-light.png')
 }
 const arrowImages = {
-    purple: require('../../assets/purple-arrow.png'),
-    red: require('../../assets/red-arrow.png')
+    purpleLight: require('../../assets/purple-arrow-light.png'),
+    redLight: require('../../assets/red-arrow-light.png')
 }
 
 const BpmAnalog = (props) => {
-    const color = props.bpm > user.getBpmHigh() || props.bpm < user.getBpmLow() ? 'red' : 'purple';
+    const color = props.bpm > user.getBpmHigh() || props.bpm < user.getBpmLow() ? 'redLight' : 'purpleLight';
 
     return (
         <View style={styles.background}>
             <Image source={heartbeatImages[color]} style={styles.heart} />
-            <Text style={styles.bpm}>{props.bpm} bpm</Text>
+            <Text style={[styles.bpm, {color: Colors[color]}]}>{props.bpm} bpm</Text>
             <TouchableOpacity style={styles.arrowButton} onPress={props.expand}>
                 <Image source={arrowImages[color]} style={styles.arrow}/>
             </TouchableOpacity>
@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
         marginTop: 25,
         marginLeft: 10,
         fontSize: 25,
-        color: Colors.black
     }
 });
 
