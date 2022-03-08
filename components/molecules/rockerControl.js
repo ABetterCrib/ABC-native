@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../../global/styles/colors';
+import Fonts from '../../global/styles/fonts';
+import user from '../../api/user';
 
-const RockerControl = (props) => {
-    const [percent, setPercent] = useState(0);
+const RockerControl = () => {
+    const [percent, setPercent] = useState(user.getRocker());
 
     return (
         <View style={styles.container}>
-            <Text style={styles.rockerText}>Rocker</Text>
-            <TouchableOpacity style={[styles.button, percent === 0 && styles.buttonHighlighted]} onPress={() => setPercent(0)}>
-                <Text style={[styles.buttonText]}>0%</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, percent === 50 && styles.buttonHighlighted]} onPress={() => setPercent(50)}>
-                <Text style={styles.buttonText}>50%</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, percent === 100 && styles.buttonHighlighted]} onPress={() => setPercent(100)}>
-                <Text style={styles.buttonText}>100%</Text>
-            </TouchableOpacity>
+            <Text style={[styles.rockerText, Fonts.purpleHeader]}>Rocker setting</Text>
+            <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity style={[styles.button, percent === 0 && styles.buttonHighlighted]} onPress={() => {setPercent(0); user.setRocker(0)}}>
+                    <Text style={[styles.buttonText]}>0</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, percent === 0.5 && styles.buttonHighlighted]} onPress={() => {setPercent(0.5); user.setRocker(0.5)}}>
+                    <Text style={styles.buttonText}>1</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, percent === 1 && styles.buttonHighlighted]} onPress={() => {setPercent(1); user.setRocker(1)}}>
+                    <Text style={styles.buttonText}>2</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -25,28 +29,31 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 30,
         height: 100,
+        width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'row',
+        flexDirection: 'column',
+        position: 'absolute',
+        bottom: 140,
     },
     button: {
-        marginLeft: 10,
+        marginHorizontal: 20,
         width: 60,
+        height: 60,
         alignItems: 'center',
         padding: 5,
         borderRadius: 10,
+        justifyContent: 'center',
     },
     buttonHighlighted: {
-        backgroundColor: Colors.purple
+        backgroundColor: Colors.purpleLight
     },
     rockerText: {
-        fontSize: 24,
-        color: Colors.black,
-        marginRight: 10,
+        marginBottom: 40,
     },
     buttonText: {
         fontSize: 20,
-        color: Colors.black,
+        color: Colors.purpleDark,
     }
 });
 

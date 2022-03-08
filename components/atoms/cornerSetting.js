@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, View, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../../global/styles/colors';
 
-const CornerSettings = (props) => {
+const CornerSettings = () => {
     return (
         <>
             <View style={styles.corner} />
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         height: 100,
         width: 100,
         borderRadius: 50,
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.purpleLight,
         position: 'absolute',
         right: -38,
         bottom: -38,

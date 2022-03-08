@@ -22,7 +22,7 @@ import {
     Dimensions
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import CornerSettings from '../components/molecules/cornerSetting';
+import CornerSettings from '../components/atoms/cornerSetting';
 
 import BleManager from 'react-native-ble-manager'
 const BleManagerModule = NativeModules.BleManager;
@@ -141,8 +141,8 @@ const Home = ({ navigation }) => {
     }
 
     const colors = bpmAlert
-        ? ['#F3D0C5', '#D3D3E3', '#CBCBEC']
-        : ['#D3D3E3', '#CBCBEC'];
+        ? ['#D44646', '#8070E5', '#707CE5']
+        : ['#8070E5', '#707CE5'];
     const locations = bpmAlert
         ? [0.2, 0.4, 1]
         : [0, 1];

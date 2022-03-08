@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Image, Dimensions, TextInput, KeyboardAvoidingView } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, Image, Dimensions, TextInput } from 'react-native';
 import Colors from '../../global/styles/colors';
 import user from '../../api/user';
 
 const arrowImages = {
-    purple: require('../../assets/purple-arrow.png'),
-    red: require('../../assets/red-arrow.png')
+    purpleLight: require('../../assets/purple-arrow-light.png'),
+    redLight: require('../../assets/red-arrow-light.png')
 }
 
 const barLength = Dimensions.get('window').width - 150;
@@ -17,6 +17,9 @@ const BpmSlider = (props) => {
     const [bpmLow, setBpmLow] = useState(user.getBpmLow());
     const [bpmHigh, setBpmHigh] = useState(user.getBpmHigh());
     const { bpm } = props;
+
+    const isAlert =  bpm > user.getBpmHigh() || bpm < user.getBpmLow();
+    const localColor = isAlert ? 'redLight' : 'purpleLight';
 
     const calculatePoints = (low, high, real) => {
         return {
@@ -81,13 +84,13 @@ const BpmSlider = (props) => {
                         maxLength={3}
                         onSubmitEditing={handleLowBpmChange}
                     />
-                    <Text style={[{fontSize: 14, marginLeft: 5, marginTop: 3}]}>bpm</Text>
+                    <Text style={[{fontSize: 14, marginLeft: 5, marginTop: 3, color: Colors[localColor]}]}>bpm</Text>
                 </View>
             )
         } else {
             return (
                 <TouchableOpacity onPress={() => {if (!changeRightBpm) setChangeLeftBpm(true)}} style={[styles.textButton, textLeft, {marginTop: 81}]}>
-                    <Text style={styles.boundaryText}>{bpmLow} bpm</Text>
+                    <Text style={[styles.boundaryText, {color: Colors[localColor]}]}>{bpmLow} bpm</Text>
                 </TouchableOpacity>
             )
         }
@@ -105,20 +108,17 @@ const BpmSlider = (props) => {
                         maxLength={3}
                         onSubmitEditing={handleHighBpmChange}
                     />
-                    <Text style={[{fontSize: 14, marginLeft: 5, marginTop: 3}]}>bpm</Text>
+                    <Text style={[{fontSize: 14, marginLeft: 5, marginTop: 3, color: Colors[localColor]}]}>bpm</Text>
                 </View>
             )
         } else {
             return (
                 <TouchableOpacity onPress={() => {if (!changeLeftBpm) setChangeRightBpm(true)}} style={[styles.textButton, textRight, {marginTop: 81}]}>
-                    <Text style={styles.boundaryText}>{bpmHigh} bpm</Text>
+                    <Text style={[styles.boundaryText, {color: Colors[localColor]}]}>{bpmHigh} bpm</Text>
                 </TouchableOpacity>
             )
         }
     }
-
-    const isAlert =  bpm > user.getBpmHigh() || bpm < user.getBpmLow();
-    const localColor = isAlert ? 'red' : 'purple';
 
     // Styles that depend on props
     const propStyles = {
@@ -173,8 +173,8 @@ const BpmSlider = (props) => {
 
 const styles = StyleSheet.create({
     arrow: {
-        height: 60,
-        width: 40,
+        height: 40,
+        width: 20,
         transform: [
             { scaleX: -1 }
         ],
