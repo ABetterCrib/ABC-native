@@ -28,7 +28,7 @@ import BleManager from 'react-native-ble-manager'
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-const Home = ({ navigation }) => {
+const Home = (props) => {
    let peripherals = [];
    const [isScanning, setIsScanning] = useState(false);
    const [connectWith, setConnectWith] = useState('Wait...');
@@ -154,7 +154,7 @@ const Home = ({ navigation }) => {
         <LinearGradient colors={colors} locations={locations} style={styles.background}>
             <Heartbeat bpm={bpm} setAlert={setBpmAlert}/>
             <Controls/>
-            <CornerSettings />
+            <CornerSettings setScreen={props.setScreen}/>
         </LinearGradient>
         </>
     );
