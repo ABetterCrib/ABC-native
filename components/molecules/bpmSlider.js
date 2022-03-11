@@ -205,7 +205,8 @@ const styles = StyleSheet.create({
         width: 40,
         borderRadius: 3,
         height: 26,
-        fontSize: 17
+        fontSize: 17,
+        color: Colors.black
     },
     circle: {
         height: 10,

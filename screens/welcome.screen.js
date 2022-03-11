@@ -1,27 +1,55 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, TouchableOpacity, StyleSheet, Image, Dimensions, TextInput, ActivityIndicator, View } from 'react-native';
 import user from '../api/user';
 import Colors from '../global/styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Welcome = (props) => {
+    const [gettingData, setGettingData] = useState(true);
     const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [failedLogin, setFailedLogin] = useState(false);
 
-    const login = async () => {
+    const login = async (name, passwd, onBoot) => {
         setLoading(true);
-        const validLogin = await user.userExists(username, password);
+        const validLogin = await user.userExists(name, passwd);
         if (validLogin) {
-            await user.fill(username);
+            await user.fill(name);
+            setLoading(false);
+            await AsyncStorage.setItem('LOGIN', JSON.stringify({password: passwd, username: name}));
             props.setScreen('Home');
-        } else {
+        } else if (!onBoot) {
             setFailedLogin(true);
             setPassword('');
+            setLoading(false);
+        } else {
+            setGettingData(false);
         }
-        setLoading(false);
     };
+
+    useEffect(() => {
+        const loginIfAlreadyLoggedIn = async () => {
+            const storage = await AsyncStorage.getItem('LOGIN');
+            if (storage !== null) {
+                const credentials = await JSON.parse(storage);
+                setPassword(credentials.password);
+                setUsername(credentials.username);
+                await login(credentials.username, credentials.password, true);
+            } else {
+                setGettingData(false);
+            }
+        }
+
+        loginIfAlreadyLoggedIn();
+    }, [])
+
+    if (gettingData) return (
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator size={'large'}/>
+        </View>
+    );
 
     return (
         <LinearGradient colors={['#8070E5', '#034371']} style={styles.container}>
@@ -30,18 +58,21 @@ const Welcome = (props) => {
             <TextInput
                 style={styles.input}
                 placeholder={'username'}
+                placeholderTextColor={Colors.gray}
                 selectionColor={'rgba(0, 0, 0, 0.6)'}
                 onChangeText={(text) => setUsername(text)}
+                value={username}
             />
             <TextInput
                 style={styles.input}
                 placeholder={'password'}
+                placeholderTextColor={Colors.gray}
                 selectionColor={'rgba(0, 0, 0, 0.6)'}
                 secureTextEntry
                 onChangeText={(text) => setPassword(text)}
                 value={password}
             />
-            <TouchableOpacity onPress={() => login()}>
+            <TouchableOpacity onPress={() => login(username, password, false)}>
                 <LinearGradient style={styles.button} colors={['#9DC6F7', '#709DC6']}>
                     <Text style={styles.text}>{loading ? 'Loading...' : 'Login'}</Text>
                 </LinearGradient>
@@ -99,6 +130,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         fontSize: 23,
         paddingLeft: 10,
+        color: Colors.black
     },
     logo: {
         width: Dimensions.get('window').width * 0.8,

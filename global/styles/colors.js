@@ -6,13 +6,15 @@ const Colors = StyleSheet.create({
     popupTextBackground: '#757474',
     purpleDark: '#1B1B62',
     purple: '#8D8DF0',
-    purpleLight: '#CBCBEC',
+    // purpleLight: '#CBCBEC',
+    purpleLight: '#D8D8EE',
     purpleMid: '#A4A4E7',
     red: '#FF6433',
     redLight: '#F3D0C5',
     redMid: '#EEBAA9',
     textBackground: '#808080',
-    white: '#F5F5F5'
+    white: '#F5F5F5',
+    gray: '#858585'
 });
 
 export default Colors;

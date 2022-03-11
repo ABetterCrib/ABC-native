@@ -2,11 +2,11 @@ import React from 'react';
 import { Image, View, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../../global/styles/colors';
 
-const CornerSettings = () => {
+const CornerSettings = (props) => {
     return (
         <>
             <View style={styles.corner} />
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => props.setScreen('Settings')}>
                 <Image source={require('../../assets/settings.png')} style={styles.icon}/>
             </TouchableOpacity>
         </>

@@ -1,3 +1,5 @@
+import argon2 from 'react-native-argon2';
+
 class User {
     constructor() {
         this.cribname = 'Loading...';
@@ -7,10 +9,13 @@ class User {
         this.muted = true;
         this.soundtrack = 0;
         this.rockerPercent = 0;
+        this.salt = '4nfi6Kl234jSKnn444abc';
     }
 
     async userExists(cribname, password) {
-        const response = await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/${cribname}/${password}`);
+        const passwordHash = await argon2(password, this.salt, {});
+        console.log(cribname, passwordHash.rawHash);
+        const response = await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/${cribname}/${passwordHash.rawHash}`);
         return response.ok;
     }
 
