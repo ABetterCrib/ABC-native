@@ -16,7 +16,7 @@ const Welcome = (props) => {
         setLoading(true);
         const validLogin = await user.userExists(name, passwd);
         if (validLogin) {
-            await user.fill(name);
+            await user.fill(name, passwd);
             setLoading(false);
             await AsyncStorage.setItem('LOGIN', JSON.stringify({password: passwd, username: name}));
             props.setScreen('Home');

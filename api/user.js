@@ -1,8 +1,7 @@
-import argon2 from 'react-native-argon2';
-
 class User {
     constructor() {
         this.cribname = 'Loading...';
+        this.password = 'No_password_entered';
         this.highbpm = 1000;
         this.lowbpm = 0;
         this.volume = 0.5;
@@ -13,17 +12,16 @@ class User {
     }
 
     async userExists(cribname, password) {
-        const passwordHash = await argon2(password, this.salt, {});
-        console.log(cribname, passwordHash.rawHash);
-        const response = await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/${cribname}/${passwordHash.rawHash}`);
+        const response = await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/${cribname}/${password}`);
         return response.ok;
     }
 
-    async fill(cribname) {
-        return fetch(`https://rocky-meadow-51854.herokuapp.com/crib/${cribname}`)
+    async fill(cribname, password) {
+        return fetch(`https://rocky-meadow-51854.herokuapp.com/crib/${cribname}/${password}`)
         .then((response) => response.json())
         .then((json) => {
             this.cribname = json.cribname;
+            this.password = json.password;
             this.highbpm = Number(json.highbpm);
             this.lowbpm = Number(json.lowbpm);
             this.volume = Number(json.volume);
