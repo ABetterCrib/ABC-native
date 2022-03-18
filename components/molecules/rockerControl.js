@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     },
     buttonText: {
-        fontSize: 20,
+        fontSize: 25,
         color: Colors.purpleDark,
     }
 });
