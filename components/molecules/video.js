@@ -1,8 +1,7 @@
 //import React from 'react';
-import React, {Component} from 'react'
+import React from 'react'
 import { View, StyleSheet } from 'react-native';
 import Size from '../../global/constants/size';
-import Video from 'react-native-video';
 import { WebView } from 'react-native-webview';
 
 const LiveVideo = (props) => {
