@@ -4,9 +4,10 @@
  */
 
 import React, { useState, useEffect } from 'react'
+import Video from 'react-native-video';
 import Light from '../api/light';
 import Controls from '../components/organisms/controls';
-import Video from '../components/molecules/video';
+import Livevideo from '../components/molecules/video';
 import Heartbeat from '../components/organisms/heartbeat';
 import Size from '../global/constants/size';
 import {
@@ -20,10 +21,12 @@ import {
     PermissionsAndroid,
     Dimensions
 } from 'react-native';
+
 import LinearGradient from 'react-native-linear-gradient';
 import CornerSettings from '../components/molecules/cornerSetting';
 
 import BleManager from 'react-native-ble-manager'
+import LiveVideo from '../components/molecules/video';
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
@@ -161,18 +164,25 @@ const Home = () => {
 
     return (
         <>
-        <Video />
+        <LiveVideo />
         <LinearGradient colors={['#D3D3E3', '#CBCBEC']} style={styles.background}>
             <Heartbeat color={'purple'}/>
             <Controls/>
             <CornerSettings />
         </LinearGradient>
+        
         {/* {bluetoothControl(onActivateBluetooth)} */}
         </>
     );
 }
 
 const styles = StyleSheet.create({
+    box: {
+        width: '100%',
+        height: Size.videoHeight,
+        //backgroundColor: 'gray',
+        alignSelf: 'center',
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',
