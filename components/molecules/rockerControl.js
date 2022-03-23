@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../../global/styles/colors';
 import Fonts from '../../global/styles/fonts';
 import user from '../../api/user';
+import Rocker from '../../api/rocker';
 
 const RockerControl = () => {
     const [percent, setPercent] = useState(user.getRocker());
@@ -11,7 +12,7 @@ const RockerControl = () => {
         <View style={styles.container}>
             <Text style={[styles.rockerText, Fonts.purpleHeader]}>Rocker setting</Text>
             <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity style={[styles.button, percent === 0 && styles.buttonHighlighted]} onPress={() => {setPercent(0); user.setRocker(0)}}>
+                <TouchableOpacity style={[styles.button, percent === 0 && styles.buttonHighlighted]} onPress={() => {setPercent(0); user.setRocker(0); Rocker.setState(0);}}>
                     <Text style={[styles.buttonText]}>0</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.button, percent === 0.5 && styles.buttonHighlighted]} onPress={() => {setPercent(0.5); user.setRocker(0.5)}}>
