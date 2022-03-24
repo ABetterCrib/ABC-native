@@ -1,6 +1,6 @@
 class User {
     constructor() {
-        this.cribname = 'Loading...';
+        this.cribname = 'No_cribname_entered';
         this.password = 'No_password_entered';
         this.highbpm = 1000;
         this.lowbpm = 0;
@@ -8,7 +8,6 @@ class User {
         this.muted = true;
         this.soundtrack = 0;
         this.rockerPercent = 0;
-        this.salt = '4nfi6Kl234jSKnn444abc';
     }
 
     async userExists(cribname, password) {
@@ -95,29 +94,30 @@ class User {
     // Setters
     setBpmLow(bpm) {
         if (bpm >= this.highbpm || bpm < 0) alert(`Invalid lower BPM cannot be set: ${bpm}`);
-        this.lowbpm = bpm;
+        else this.lowbpm = bpm;
     }
     setBpmHigh(bpm) {
         if (bpm <= this.lowbpm) alert(`Invalid higher BPM cannot be set: ${bpm}`);
-        this.highbpm = bpm;
+        else this.highbpm = bpm;
     }
     setCribName(name) {
         this.cribname = name;
     }
     setVolume(vol) {
         if (vol < 0.0 || vol > 1.0) alert(`Invalid volume cannot be set: ${vol}`);
-        this.volume = vol;
+        else this.volume = vol;
     }
     setSoundtrack(track) {
         if (track < 0 || track > 8) alert(`Invalid soundtrack cannot be set: ${track}`);
-        this.soundtrack = track;
+        else this.soundtrack = track;
     }
     setRocker(rock) {
-        if (rock < 0 || rock > 1) alert(`Invalid rocker percentage cannot be set: ${rock}`);
-        this.rockerPercent = rock;
+        if (rock < 0 || rock > 2) alert(`Invalid rocker percentage cannot be set: ${rock}`);
+        else this.rockerPercent = rock;
     }
     setMuted(mute) {
-        this.muted = mute;
+        if (typeof mute !== 'boolean') alert(`Invalid muted state cannot be set: ${mute}`);
+        else this.muted = mute;
     }
 }
 
