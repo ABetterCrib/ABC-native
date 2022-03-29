@@ -10,13 +10,8 @@ class User {
         this.rockerPercent = 0;
     }
 
-    async userExists(cribname, password) {
-        const response = await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/${cribname}/${password}`);
-        return response.ok;
-    }
-
     async fill(cribname, password) {
-        return fetch(`https://rocky-meadow-51854.herokuapp.com/crib/${cribname}/${password}`)
+        return fetch(`https://rocky-meadow-51854.herokuapp.com/crib/login/${cribname}/${password}`)
         .then((response) => response.json())
         .then((json) => {
             this.cribname = json.cribname;
@@ -25,6 +20,34 @@ class User {
             this.lowbpm = Number(json.lowbpm);
             this.volume = Number(json.volume);
             this.soundtrack = Number(json.soundtrack);
+        });
+    }
+
+    async userExists(cribname, password) {
+        const response = await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/login/${cribname}/${password}`);
+        return response.ok;
+    }
+
+    async usernameExists(cribname) {
+        const response = await (await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/name/${cribname}`)).json();
+        try {
+            return response[0].cribname && true;
+        } catch {
+            return false;
+        }
+    }
+
+    async createUser(cribname, passwd) {
+        return fetch(`https://rocky-meadow-51854.herokuapp.com/crib/create`, {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                cribname: cribname,
+                password: passwd
+            })
         });
     }
 

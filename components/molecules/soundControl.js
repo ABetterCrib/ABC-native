@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         height: 220,
         width: '100%',
         position: 'absolute',
-        bottom: 110,
+        bottom: 90,
         alignItems: 'center',
     },
     image: {

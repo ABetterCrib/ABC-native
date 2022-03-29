@@ -1,4 +1,4 @@
-const BASE_URL = 'http://153.106.168.127:3000';
+const BASE_URL = 'http://153.106.168.229:3000';
 
 class Api {
   call(url, options = {}) {
