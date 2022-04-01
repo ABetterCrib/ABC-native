@@ -6,7 +6,7 @@ class User {
         this.lowbpm = 0;
         this.volume = 0.5;
         this.muted = true;
-        this.soundtrack = 0;
+        this.soundtrack = 'None';
         this.rockerPercent = 0;
     }
 
@@ -19,7 +19,7 @@ class User {
             this.highbpm = Number(json.highbpm);
             this.lowbpm = Number(json.lowbpm);
             this.volume = Number(json.volume);
-            this.soundtrack = Number(json.soundtrack);
+            this.soundtrack = json.soundtrack;
         });
     }
 
@@ -131,8 +131,7 @@ class User {
         else this.volume = vol;
     }
     setSoundtrack(track) {
-        if (track < 0 || track > 8) alert(`Invalid soundtrack cannot be set: ${track}`);
-        else this.soundtrack = track;
+        this.soundtrack = track;
     }
     setRocker(rock) {
         if (rock < 0 || rock > 2) alert(`Invalid rocker percentage cannot be set: ${rock}`);
@@ -141,6 +140,7 @@ class User {
     setMuted(mute) {
         if (typeof mute !== 'boolean') alert(`Invalid muted state cannot be set: ${mute}`);
         else this.muted = mute;
+        console.log('Setting mute:', mute);
     }
 }
 

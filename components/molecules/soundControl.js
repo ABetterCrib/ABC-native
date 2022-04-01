@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Image }
 import Colors from '../../global/styles/colors';
 import Fonts from '../../global/styles/fonts';
 import Slider from '@react-native-community/slider';
-import user from '../../api/user';
+import User from '../../api/user';
+import Soundtrack from '../../api/soundtrack';
 
 const volumeIcons = {
     muted: require('../../assets/purple-mute-light.png'),
@@ -11,49 +12,70 @@ const volumeIcons = {
 }
 
 const SoundControl = () => {
-    const [chosen, setChosen] = useState(user.getSoundtrack());
-    const [volume, setVolume] = useState(user.getVolume());
-    const [muted, setMuted] = useState(user.getMuted());
+    const [chosen, setChosen] = useState(User.getSoundtrack());
+    const [volume, setVolume] = useState(User.getVolume());
+    const [muted, setMuted] = useState(User.getMuted());
 
     const SOUNDS = [
-        [{sound: 'None'}, {sound: 'Birds'}, {sound: 'Stream'}],
-        [{sound: 'White'}, {sound: 'City'}, {sound: 'Ocean'}],
+        // Zapsplat
+        [{sound: 'None'}, {sound: 'Car'}, {sound: 'Stream'}],
+        [{sound: 'Pink'}, {sound: 'Heartbeat'}, {sound: 'Ocean'}],
         [{sound: 'Music'}, {sound: 'Train'}, {sound: 'Rain'}]
     ]
 
-    const renderSound = ({index, item}, row) => {
-        const position = index + row * 3;
-        const isChosen = position === chosen;
+    const renderSound = ({item}) => {
+        const isChosen = item.sound === chosen;
 
         return (
             <TouchableOpacity
                 style={[styles.button, isChosen && styles.buttonHighlighted]}
-                onPress={() => setSound(position)}
+                onPress={() => setSound(item.sound)}
             >
                 <Text style={styles.soundText}>{item.sound}</Text>
             </TouchableOpacity>
         )
     }
 
-    const setSound = async (trackIndex) => {
-        console.log(trackIndex);
-        setChosen(trackIndex);
-        user.setSoundtrack(trackIndex);
-        await user.pushSoundtrackToDatabase(trackIndex);
-    }
-
     const SoundsRow = ({row}) => (
         <FlatList
             data={SOUNDS[row]}
-            renderItem={(item) => renderSound(item, row)}
+            renderItem={(item) => renderSound(item)}
             keyExtractor={(item) => item.sound}
             horizontal={true}
         />
     )
 
+    const setSound = async (sound) => {
+        if (sound === chosen) return;
+        if (!muted) {
+            if (chosen !== 'None') {
+                await Soundtrack.stop();
+            }
+            await Soundtrack.setTrack(sound);
+        }
+        setChosen(sound);
+        User.setSoundtrack(sound);
+        await User.pushSoundtrackToDatabase(sound);
+    }
+
+    const updateVolume = (vol) => {
+        setVolume(vol);
+        Soundtrack.setVolume(vol);
+    }
+
     const storeVolume = async (vol) => {
-        user.setVolume(vol);
-        await user.pushVolumeToDatabase(vol);
+        User.setVolume(vol);
+        await User.pushVolumeToDatabase(vol);
+    }
+
+    const handleMute = async () => { 
+        User.setMuted(!muted);
+        if (muted) {
+            await Soundtrack.setTrack(chosen);
+        } else if (!muted && chosen !== 'None') {
+            await Soundtrack.stop();
+        }
+        setMuted(!muted);
     }
 
     return (
@@ -63,13 +85,13 @@ const SoundControl = () => {
             <SoundsRow row={1} />
             <SoundsRow row={2} />
             <View style={{flexDirection: 'row', marginTop: 20, marginLeft: 10}}>
-                <TouchableOpacity style={styles.image} onPress={() => {setMuted(!muted); user.setMuted(!muted)}}>
+                <TouchableOpacity style={styles.image} onPress={() => handleMute()}>
                     <Image source={volumeIcons[muted ? 'muted' : 'notMuted']} style={[styles.image, muted && {opacity: 0.7}]}/>
                 </TouchableOpacity>
                 <Slider
                     disabled={muted}
                     value={volume}
-                    onValueChange={(vol) => setVolume(vol)}
+                    onValueChange={(vol) => updateVolume(vol)}
                     onSlidingComplete={(vol) => storeVolume(vol)}
                     style={{width: 260, marginLeft: 10}}
                     minimumValue={0}
@@ -84,9 +106,9 @@ const SoundControl = () => {
 
 const styles = StyleSheet.create({
     button: {
-        width: 80,
+        width: 105,
         height: 40,
-        marginHorizontal: Dimensions.get('window').width * 0.1 - 27,
+        marginHorizontal: Dimensions.get('window').width * 0.1 - 30,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10
