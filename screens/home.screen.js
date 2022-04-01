@@ -109,12 +109,7 @@ const Home = () => {
         })
     }, []);
 
-    const onChangeLight = (type) => {
-        if (type === 'on')
-            Light.lightOn().then((response) => response.json()).then((data) => console.log(data.msg)).catch((error) => console.log(error));
-        else if (type === 'off')
-            Light.lightOff().then((response) => response.json()).then((data) => console.log(data.msg)).catch((error) => console.log(error));
-    }
+    
 
     const onActivateBluetooth = async () => {
         console.log('Activating');

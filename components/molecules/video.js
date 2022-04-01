@@ -1,4 +1,3 @@
-//import React from 'react';
 import React from 'react'
 import { View, StyleSheet } from 'react-native';
 import Size from '../../global/constants/size';
@@ -15,7 +14,7 @@ const LiveVideo = (props) => {
         contentInset={{top: 0, right: 0, left: 0, bottom: 0}}
         scrollEnabled={false}
         //source={{html: this.formatHtml(), baseUrl: '/'}} 
-        source={{uri: 'http://153.106.229.191:8000/stream.mjpg'}}
+        source={{uri: 'http://153.106.168.120:8000/stream.mjpg'}}
         />
     )
 }
@@ -29,4 +28,4 @@ const styles = StyleSheet.create({
     }
 });
 
-//export default Livevideo;
+export default LiveVideo;
