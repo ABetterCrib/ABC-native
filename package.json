@@ -17,6 +17,7 @@
     "react-native-ble-manager": "^8.0.1",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-modal": "^13.0.0",
+    "react-native-recording": "^0.5.1",
     "react-native-safe-area-context": "^4.0.1",
     "react-native-video": "^5.2.0"
   },
