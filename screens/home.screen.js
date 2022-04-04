@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import CornerSettings from '../components/atoms/cornerSetting';
+import LiveVideo from '../components/molecules/video';
 
 const Home = (props) => {
    const [bpm, setBpm] = useState(121);
@@ -30,7 +31,7 @@ const Home = (props) => {
 
     return (
         <>
-        <Video />
+        <LiveVideo />
         <LinearGradient colors={colors} locations={locations} style={styles.background}>
             <Heartbeat bpm={bpm} setAlert={setBpmAlert}/>
             <Controls/>
