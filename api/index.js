@@ -1,5 +1,6 @@
-// const BASE_URL = 'http://153.106.168.229:3000';
-const BASE_URL = 'http://153.106.229.198:3000';
+import BASE_IP from "./ip";
+
+const BASE_URL = BASE_IP.concat(':3000');
 
 class Api {
   call(url, options = {}) {
