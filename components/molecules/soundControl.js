@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
         height: 220,
         width: '100%',
         position: 'absolute',
-        bottom: 90,
+        bottom: 65,
         alignItems: 'center',
     },
     image: {
