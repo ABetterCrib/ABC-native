@@ -3,15 +3,14 @@
  * @flow strict-local
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Controls from '../components/organisms/controls';
-import Video from '../components/molecules/video';
 import Heartbeat from '../components/organisms/heartbeat';
-import Size from '../global/constants/size';
 import user from '../api/user';
 import {
     StyleSheet,
-    Dimensions
+    Dimensions,
+    View
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import CornerSettings from '../components/atoms/cornerSetting';
@@ -43,23 +42,14 @@ const Home = (props) => {
 
 const styles = StyleSheet.create({
     background: {
-        flex: 1,
-        height: Dimensions.get('window').height - Size.videoHeight
+        width: '100%',
+        height: Dimensions.get('window').height - 288,
     },
     buttonText: {
         fontSize: 15,
         paddingLeft: 20,
         paddingRight: 20,
         color: 'white'
-    },
-    colorBlue: {
-        backgroundColor: 'blue'
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     lightOff: {
         backgroundColor: 'black',
