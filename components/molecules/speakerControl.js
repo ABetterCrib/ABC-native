@@ -3,9 +3,11 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../../global/styles/colors';
 import Fonts from '../../global/styles/fonts';
 import Api from '../../api';
-import { PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, Platform } from "react-native";
 import Recording from "react-native-recording";
 import { LogBox } from 'react-native';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+const RNFS = require('react-native-fs');
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
@@ -14,41 +16,66 @@ const SpeakerControl = () => {
     const CIRCLES_ON_SCREEN = 18;
 
     useEffect(() => {
-        let listener;
-        const startRecording = async () => {
-            await PermissionsAndroid.requestMultiple([
-                PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-            ]);
+        const audioRecorderPlayer = new AudioRecorderPlayer();
 
-            Recording.init({
-                bufferSize: 4096,
-                sampleRate: 44100,
-                bitsPerChannel: 16,
-                channelsPerFrame: 1,
+        const onStartRecord = async () => {
+            if (Platform.OS === 'android') {
+                await PermissionsAndroid.requestMultiple([
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                    PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
+                ]);
+            }
+            const result = await audioRecorderPlayer.startRecorder(RNFS.CachesDirectoryPath.concat('/test.mp4'));
+            audioRecorderPlayer.addRecordBackListener((e) => {
+              return;
             });
+        };
 
-            listener = Recording.addRecordingEventListener((data) => {
-                Api.call(`speaking`, {method: 'POST', body: {data: data}});
-                const nums = data.map(Number);
-                const mean = nums.reduce((a,b)=>a+b) / nums.length;
-                const error = nums.map((el) => Math.abs(mean - el));
-                const mae = error.reduce((a,b)=>a+b)
-                const vol = Math.round(mae / 16000000 * 18)
-                const setVol = vol <= CIRCLES_ON_SCREEN ? vol : CIRCLES_ON_SCREEN;
-                setVolume(setVol);
-                console.log(setVol);
-            });
+        const onStopRecord = async () => {
+            const result = await audioRecorderPlayer.stopRecorder();
+            audioRecorderPlayer.removeRecordBackListener();
+            const soundClip = await RNFS.readFile(RNFS.CachesDirectoryPath.concat('/test.mp4'), 'base64');
+            Api.call(`speaking`, {method: 'POST', body: {data: soundClip}});
+        };
 
-            Recording.start();
-        }
+        onStartRecord();
+        setTimeout(() => onStopRecord(), 3000);
+        // let listener;
+        // const startRecording = async () => {
+        //     await PermissionsAndroid.requestMultiple([
+        //         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        //     ]);
 
-        startRecording();
+        //     Recording.init({
+        //         bufferSize: 4096,
+        //         sampleRate: 44100,
+        //         bitsPerChannel: 16,
+        //         channelsPerFrame: 1,
+        //     });
 
-        return (async () => {
-            // stop recording
-            Recording.stop();
-            listener.remove();
-        });
+        //     listener = Recording.addRecordingEventListener((data) => {
+        //         Api.call(`speaking`, {method: 'POST', body: {data: data}});
+        //         const nums = data.map(Number);
+        //         const mean = nums.reduce((a,b)=>a+b) / nums.length;
+        //         const error = nums.map((el) => Math.abs(mean - el));
+        //         const mae = error.reduce((a,b)=>a+b)
+        //         const vol = Math.round(mae / 16000000 * 18)
+        //         const setVol = vol <= CIRCLES_ON_SCREEN ? vol : CIRCLES_ON_SCREEN;
+        //         setVolume(setVol);
+        //         console.log(setVol);
+        //     });
+
+        //     Recording.start();
+        // }
+
+        // startRecording();
+
+        // return (async () => {
+        //     // stop recording
+        //     Recording.stop();
+        //     listener.remove();
+        // });
     })
 
     return (
