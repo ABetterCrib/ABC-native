@@ -1,24 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import Colors from '../../global/styles/colors';
 import Fonts from '../../global/styles/fonts';
 import Api from '../../api';
 import { PermissionsAndroid, Platform } from "react-native";
-import Recording from "react-native-recording";
 import { LogBox } from 'react-native';
-import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-const RNFS = require('react-native-fs');
+import RecordPlayer from '../../api/recorder';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const SpeakerControl = () => {
-    const [volume, setVolume] = useState(0);
-    const CIRCLES_ON_SCREEN = 18;
+    const [timeElapsed, setTimeElapsed] = useState(0);
 
     useEffect(() => {
-        const audioRecorderPlayer = new AudioRecorderPlayer();
-
-        const onStartRecord = async () => {
+        const getPermissions = async () => {
             if (Platform.OS === 'android') {
                 await PermissionsAndroid.requestMultiple([
                     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -26,74 +21,49 @@ const SpeakerControl = () => {
                     PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
                 ]);
             }
-            const result = await audioRecorderPlayer.startRecorder(RNFS.CachesDirectoryPath.concat('/test.mp4'));
-            audioRecorderPlayer.addRecordBackListener((e) => {
-              return;
-            });
-        };
+        }
+        getPermissions();
+    });
 
-        const onStopRecord = async () => {
-            const result = await audioRecorderPlayer.stopRecorder();
-            audioRecorderPlayer.removeRecordBackListener();
-            const soundClip = await RNFS.readFile(RNFS.CachesDirectoryPath.concat('/test.mp4'), 'base64');
-            Api.call(`speaking`, {method: 'POST', body: {data: soundClip}});
-        };
+    const startSlide = () => {
+        const intervalId = setInterval(() => {setTimeElapsed(timeElapsed => (timeElapsed + 17 > 5000 ? 5000 : timeElapsed + 17) )}, 100);
+        setTimeout(() => {
+            clearInterval(intervalId);
+            setTimeElapsed(0);
+        }, 5000);
+    }
 
-        onStartRecord();
-        setTimeout(() => onStopRecord(), 3000);
-        // let listener;
-        // const startRecording = async () => {
-        //     await PermissionsAndroid.requestMultiple([
-        //         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        //     ]);
-
-        //     Recording.init({
-        //         bufferSize: 4096,
-        //         sampleRate: 44100,
-        //         bitsPerChannel: 16,
-        //         channelsPerFrame: 1,
-        //     });
-
-        //     listener = Recording.addRecordingEventListener((data) => {
-        //         Api.call(`speaking`, {method: 'POST', body: {data: data}});
-        //         const nums = data.map(Number);
-        //         const mean = nums.reduce((a,b)=>a+b) / nums.length;
-        //         const error = nums.map((el) => Math.abs(mean - el));
-        //         const mae = error.reduce((a,b)=>a+b)
-        //         const vol = Math.round(mae / 16000000 * 18)
-        //         const setVol = vol <= CIRCLES_ON_SCREEN ? vol : CIRCLES_ON_SCREEN;
-        //         setVolume(setVol);
-        //         console.log(setVol);
-        //     });
-
-        //     Recording.start();
-        // }
-
-        // startRecording();
-
-        // return (async () => {
-        //     // stop recording
-        //     Recording.stop();
-        //     listener.remove();
-        // });
-    })
+    const darkBarWidth = {
+        width: Dimensions.get('window').width * 0.45 * ((timeElapsed === -1 ? 0 : timeElapsed) / 5000),
+    };
 
     return (
         <View style={styles.container}>
-            <Text style={Fonts.purpleHeader}>Speak</Text>
-            <View style={styles.circleContainer}>
-                {Array.from('1'.repeat(volume).concat('0'.repeat(CIRCLES_ON_SCREEN-volume)))
-                .map((el, index) => {
-                    return (
-                        <View style={[styles.circle, el === '1' && styles.circleFilled[index]]} key={index}/>
-                    )
-                })}
+            <Text style={Fonts.purpleHeader}>{timeElapsed === 0 ? 'Press to record' : 'Recording...'}</Text>
+            <View style={{flexDirection: 'row', marginTop: 50}}>
+                { timeElapsed === 0 && <TouchableOpacity style={styles.recordSize} onPress={() => {RecordPlayer.startRecorder(), startSlide()}} pressRetentionOffset={100}>
+                    <Image source={require('../../assets/purple-record-light.png')} style={[styles.recordSize]}/>
+                </TouchableOpacity>}
+                { timeElapsed !== 0 && <View style={styles.barLight}/>}
+                { timeElapsed !== 0 && <View style={[styles.barDark, darkBarWidth]}/>}
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    barLight: {
+        height: 3,
+        marginTop: 31,
+        width: Dimensions.get('window').width * 0.45,
+        backgroundColor: Colors.purpleLight,
+    },
+    barDark: {
+        backgroundColor: Colors.purpleMid,
+        position: 'absolute',
+        height: 3,
+        marginTop: 31,
+    },
     container: {
         height: 110,
         width: '100%',
@@ -132,7 +102,11 @@ const styles = StyleSheet.create({
         {backgroundColor: Colors.redMid},
         {backgroundColor: Colors.red},
         {backgroundColor: Colors.red},
-    ]
+    ],
+    recordSize: {
+        width: 70,
+        height: 70
+    }
 });
 
 export default SpeakerControl;
