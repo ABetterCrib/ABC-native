@@ -2,6 +2,7 @@ package com.abcnative;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;
+import com.rnfs.RNFSPackage;
 
 public class MainActivity extends ReactActivity {
 
@@ -17,5 +18,5 @@ public class MainActivity extends ReactActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(null);
-}
+  }
 }

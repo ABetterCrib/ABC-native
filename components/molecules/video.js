@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
+import BASE_IP from '../../api/ip';
 
 const LiveVideo = (props) => {
 
@@ -13,7 +14,7 @@ const LiveVideo = (props) => {
             contentInset={{top: 0, right: 0, left: 0, bottom: 0}}
             scrollEnabled={false}
             //source={{html: this.formatHtml(), baseUrl: '/'}}
-            source={{uri: 'http://153.106.229.139:8000/stream.mjpg'}}
+            source={{uri: BASE_IP.concat(':8000/stream.mjpg')}}
         />
     )
 }

@@ -17,7 +17,7 @@ class Api {
       fetchOptions.body = JSON.stringify(options.body);
     }
 
-    console.log(`${fetchOptions.method} request to /${url} ${fetchOptions.body ? `with body: ${fetchOptions.body}` : ''}`);
+    console.log(`${fetchOptions.method} request to /${url}`);
     return fetch(`${BASE_URL}/${url}`, fetchOptions);
   }
 }

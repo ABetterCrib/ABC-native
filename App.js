@@ -126,7 +126,6 @@ export default function App() {
         poster={'https://scontent-ort2-2.xx.fbcdn.net/v/t39.30808-1/225517274_1985200158304924_7680111137912694149_n.jpg?stp=c0.0.320.320a_dst-jpg_p320x320&_nc_cat=109&ccb=1-5&_nc_sid=7206a8&_nc_ohc=LLDG2A7mlFIAX8dgRrj&_nc_ht=scontent-ort2-2.xx&oh=00_AT9H4iWsNGaPeAVietuAdvQgZei6JaSHazoEGySrxTSnpw&oe=624D79DD'}
         style={{height: 0, width: 0}}
         onError={() => alert('Error connecting to '.concat(BASE_IP).concat(':8888/out.mp3'))}
-        onLoad={(payload) => alert('Loaded')}
         muted={screen !== 'Home'}
       />
     </>

@@ -130,6 +130,10 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
         applicationId "com.abcnative"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -215,6 +219,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(':react-native-fs')
 }
 
 // Run this once to be able to run the application with BUCK
