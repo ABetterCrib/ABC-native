@@ -140,7 +140,9 @@ const BpmSlider = (props) => {
     const textRight = {
         marginLeft: points.high.measured ? circleMid.marginLeft - 25: barLength + 6,
     }
-    if (textRight.marginLeft < textLeft.marginLeft + (changeLeftBpm ? 90 : 60)) textRight.marginLeft = textLeft.marginLeft + (changeLeftBpm ? 90 : 60);
+    if (textRight.marginLeft < textLeft.marginLeft + (changeLeftBpm ? 90 : 60)) {
+        textRight.marginLeft = textLeft.marginLeft + (changeLeftBpm ? 90 : 60);
+    }
 
     return (
         <View style={{flexDirection: 'row', marginTop: 30}}>
@@ -161,10 +163,18 @@ const BpmSlider = (props) => {
                 <View style={[styles.connectingBar, propStyles.color, {marginLeft: points.low.measured ? 39 : (points.high.measured ? barLength + 39 : circleMid.marginLeft + 4)}]}/>
                 <View
                     opacity={textWidth === 0 ? 0 : 1}
-                    onLayout={(e) => setTextWidth(e.nativeEvent.layout.width)}
-                    style={[styles.textbox, propStyles.color, {marginLeft: points.low.measured ? 39 - textWidth / 2 : (points.high.measured ? barLength - textWidth / 2 + 39 : circleMid.marginLeft - textWidth / 2 + 4)}]}
+                    style={[
+                        styles.textbox,
+                        propStyles.color,
+                        {marginLeft: points.low.measured
+                            ? 35 - textWidth / 2
+                            : (points.high.measured
+                                ? barLength - textWidth / 2 + 35
+                                : circleMid.marginLeft - textWidth / 2),
+                        }
+                    ]}
                 >
-                    <Text style={styles.textboxText}>{bpm}</Text>
+                    <Text style={styles.textboxText} onLayout={(e) => setTextWidth(e.nativeEvent.layout.width)}>{bpm}</Text>
                 </View>
             </View>
         </View>

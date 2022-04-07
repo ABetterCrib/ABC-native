@@ -23,7 +23,7 @@ const Settings = (props) => {
             <Text style={styles.header}>Settings</Text>
             <View style={styles.headerBar}/>
             <TouchableOpacity style={styles.list} onPress={() => logout()}>
-                <Text style={styles.listText}>Logout</Text>
+                <Text style={styles.listText}>Log out</Text>
             </TouchableOpacity>
             <View style={{flexDirection: 'row'}}>
                 <TouchableOpacity style={styles.list} onPress={() => connectToCrib()}>

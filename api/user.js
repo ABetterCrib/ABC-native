@@ -24,8 +24,13 @@ class User {
     }
 
     async userExists(cribname, password) {
-        const response = await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/login/${cribname}/${password}`);
-        return response.ok;
+        const response = await (await fetch(`https://rocky-meadow-51854.herokuapp.com/crib/login/${cribname}/${password}`)).json();
+        console.log(response);
+        try {
+            return response.cribname && true;
+        } catch {
+            return false;
+        }
     }
 
     async usernameExists(cribname) {

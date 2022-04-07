@@ -15,6 +15,7 @@ const SoundControl = () => {
     const [chosen, setChosen] = useState(User.getSoundtrack());
     const [volume, setVolume] = useState(User.getVolume());
     const [muted, setMuted] = useState(User.getMuted());
+    const [songBeingChosen, setSongBeingChosen] = useState(false);
 
     const SOUNDS = [
         // Zapsplat
@@ -30,6 +31,7 @@ const SoundControl = () => {
             <TouchableOpacity
                 style={[styles.button, isChosen && styles.buttonHighlighted]}
                 onPress={() => setSound(item.sound)}
+                disabled={songBeingChosen}
             >
                 <Text style={styles.soundText}>{item.sound}</Text>
             </TouchableOpacity>
@@ -46,6 +48,8 @@ const SoundControl = () => {
     )
 
     const setSound = async (sound) => {
+        setSongBeingChosen(true);
+        setTimeout(() => setSongBeingChosen(false), 1000);
         if (sound === chosen) return;
         if (!muted) {
             if (chosen !== 'None') {
@@ -94,7 +98,7 @@ const SoundControl = () => {
                     onValueChange={(vol) => updateVolume(vol)}
                     onSlidingComplete={(vol) => storeVolume(vol)}
                     style={{width: 260, marginLeft: 10}}
-                    minimumValue={0}
+                    minimumValue={0.05}
                     maximumValue={1}
                     minimumTrackTintColor={Colors.purpleMid}
                     thumbTintColor={Colors.purpleMid}

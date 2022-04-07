@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import Colors from '../../global/styles/colors';
 import Fonts from '../../global/styles/fonts';
-import Api from '../../api';
 import { PermissionsAndroid, Platform } from "react-native";
 import { LogBox } from 'react-native';
 import RecordPlayer from '../../api/recorder';
@@ -11,6 +10,7 @@ LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const SpeakerControl = () => {
     const [timeElapsed, setTimeElapsed] = useState(0);
+    const [loading, setLoading] = useState(null);
 
     useEffect(() => {
         const getPermissions = async () => {
@@ -29,7 +29,13 @@ const SpeakerControl = () => {
         const intervalId = setInterval(() => {setTimeElapsed(timeElapsed => (timeElapsed + 17 > 5000 ? 5000 : timeElapsed + 17) )}, 100);
         setTimeout(() => {
             clearInterval(intervalId);
-            setTimeElapsed(0);
+            setLoading(0);
+            const intervalId2 = setInterval(() => {setLoading(loading => (loading + 1) % 4)}, 400);
+            setTimeout(() => {
+                clearInterval(intervalId2);
+                setLoading(null);
+                setTimeElapsed(0);
+            }, 6000);
         }, 5000);
     }
 
@@ -41,12 +47,13 @@ const SpeakerControl = () => {
         <View style={styles.container}>
             <Text style={Fonts.purpleHeader}>{timeElapsed === 0 ? 'Press to record' : 'Recording...'}</Text>
             <View style={{flexDirection: 'row', marginTop: 50}}>
-                { timeElapsed === 0 && <TouchableOpacity style={styles.recordSize} onPress={() => {RecordPlayer.startRecorder(), startSlide()}} pressRetentionOffset={100}>
+                { timeElapsed === 0 && loading === null && <TouchableOpacity style={styles.recordSize} onPress={() => {RecordPlayer.startRecorder(), startSlide()}} pressRetentionOffset={100}>
                     <Image source={require('../../assets/purple-record-light.png')} style={[styles.recordSize]}/>
                 </TouchableOpacity>}
-                { timeElapsed !== 0 && <View style={styles.barLight}/>}
-                { timeElapsed !== 0 && <View style={[styles.barDark, darkBarWidth]}/>}
+                { (timeElapsed !== 0 || loading !== null) && <View style={styles.barLight}/>}
+                { (timeElapsed !== 0 || loading !== null) && <View style={[styles.barDark, darkBarWidth]}/>}
             </View>
+            { loading !== null && <Text style={{marginTop: 10}}>{'Sending'.concat('.'.repeat(loading))}</Text>}
         </View>
     )
 }

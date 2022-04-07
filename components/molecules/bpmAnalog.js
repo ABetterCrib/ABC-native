@@ -17,9 +17,9 @@ const BpmAnalog = (props) => {
 
     return (
         <View style={styles.background}>
-            <Image source={heartbeatImages[color]} style={styles.heart} />
-            <Text style={[styles.bpm, {color: Colors[color]}]}>{props.bpm} bpm</Text>
-            <TouchableOpacity style={styles.arrowButton} onPress={props.expand}>
+            <TouchableOpacity style={styles.button} onPress={props.expand}>
+                <Image source={heartbeatImages[color]} style={styles.heart} />
+                <Text style={[styles.bpm, {color: Colors[color]}]}>{props.bpm} bpm</Text>
                 <Image source={arrowImages[color]} style={styles.arrow}/>
             </TouchableOpacity>
         </View>
@@ -30,18 +30,18 @@ const styles = StyleSheet.create({
     arrow: {
         width: 20,
         height: 40,
-    },
-    arrowButton: {
-        height: 40,
-        width: 40,
         marginTop: 25,
-        paddingLeft: 8,
+        marginLeft: 8,
+    },
+    button: {
+        height: 80,
+        width: 230,
+        flexDirection: 'row',
     },
     background: {
         height: 200,
         width: '100%',
         alignSelf: 'center',
-        flexDirection: 'row',
     },
     heart: {
         marginTop: 10,
