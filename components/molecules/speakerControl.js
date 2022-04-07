@@ -29,13 +29,14 @@ const SpeakerControl = () => {
         const intervalId = setInterval(() => {setTimeElapsed(timeElapsed => (timeElapsed + 17 > 5000 ? 5000 : timeElapsed + 17) )}, 100);
         setTimeout(() => {
             clearInterval(intervalId);
+            setTimeElapsed(5000);
             setLoading(0);
             const intervalId2 = setInterval(() => {setLoading(loading => (loading + 1) % 4)}, 400);
             setTimeout(() => {
                 clearInterval(intervalId2);
                 setLoading(null);
                 setTimeElapsed(0);
-            }, 6000);
+            }, 7000);
         }, 5000);
     }
 
@@ -45,7 +46,7 @@ const SpeakerControl = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={Fonts.purpleHeader}>{timeElapsed === 0 ? 'Press to record' : 'Recording...'}</Text>
+            <Text style={Fonts.purpleHeader}>{timeElapsed === 0 ? 'Press to record' : (timeElapsed === 5000 ? 'Sending'.concat('.'.repeat(loading)) : 'Recording...')}</Text>
             <View style={{flexDirection: 'row', marginTop: 50}}>
                 { timeElapsed === 0 && loading === null && <TouchableOpacity style={styles.recordSize} onPress={() => {RecordPlayer.startRecorder(), startSlide()}} pressRetentionOffset={100}>
                     <Image source={require('../../assets/purple-record-light.png')} style={[styles.recordSize]}/>
@@ -53,14 +54,13 @@ const SpeakerControl = () => {
                 { (timeElapsed !== 0 || loading !== null) && <View style={styles.barLight}/>}
                 { (timeElapsed !== 0 || loading !== null) && <View style={[styles.barDark, darkBarWidth]}/>}
             </View>
-            { loading !== null && <Text style={{marginTop: 10}}>{'Sending'.concat('.'.repeat(loading))}</Text>}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     barLight: {
-        height: 3,
+        height: 20,
         marginTop: 31,
         width: Dimensions.get('window').width * 0.45,
         backgroundColor: Colors.purpleLight,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     barDark: {
         backgroundColor: Colors.purpleMid,
         position: 'absolute',
-        height: 3,
+        height: 20,
         marginTop: 31,
     },
     container: {

@@ -4,13 +4,18 @@ import Back from '../components/atoms/back';
 import Colors from '../global/styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Soundtrack from '../api/soundtrack';
 
 const Settings = (props) => {
     const [triedBluetooth, setTriedBluetooth] = useState(false);
 
     const logout = async () => {
         await AsyncStorage.removeItem('LOGIN');
-        props.setScreen('Welcome');
+        await Soundtrack.stop();
+        setTimeout(async () => {
+            await Soundtrack.clearStop();
+            props.setScreen('Welcome');
+        }, 500)
     }
 
     const connectToCrib = async () => {

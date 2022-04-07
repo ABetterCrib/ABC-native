@@ -48,18 +48,36 @@ const SoundControl = () => {
     )
 
     const setSound = async (sound) => {
-        setSongBeingChosen(true);
-        setTimeout(() => setSongBeingChosen(false), 1000);
         if (sound === chosen) return;
+
+        // This is to disable choosing another song until this one has been handled
+        setSongBeingChosen(true);
+        setTimeout(() => setSongBeingChosen(false), 1100);
+
+        // Heartbeat crashes at volumes above 0.9, so need to make a new maximum
+        // These calculations are so the slider stays at the same spot even as the maximum changes
+        if (sound === 'Heartbeat') {
+            const newVol = Number((0.9 - (0.85 - 0.85 * volume) / 0.95).toFixed(6));
+            storeVolume(newVol);
+            updateVolume(newVol);
+        } else if (chosen === 'Heartbeat') {
+            const newVol = Number((1.0 - (0.95 * (0.9 - volume)) / 0.85).toFixed(6));
+            storeVolume(newVol);
+            updateVolume(newVol);
+        }
+
+        // Play the track on the pi
         if (!muted) {
-            if (chosen !== 'None') {
-                await Soundtrack.stop();
+            await Soundtrack.stop();
+            if (sound !== 'None') {
+                await Soundtrack.setTrack(sound);
             }
-            await Soundtrack.setTrack(sound);
         }
         setChosen(sound);
+
+        // Set variables in user, ship off to the database
         User.setSoundtrack(sound);
-        await User.pushSoundtrackToDatabase(sound);
+        User.pushSoundtrackToDatabase(sound);
     }
 
     const updateVolume = (vol) => {
@@ -72,14 +90,14 @@ const SoundControl = () => {
         await User.pushVolumeToDatabase(vol);
     }
 
-    const handleMute = async () => { 
-        User.setMuted(!muted);
-        if (muted) {
+    const handleMute = async (m) => {
+        if (!m) {
             await Soundtrack.setTrack(chosen);
-        } else if (!muted && chosen !== 'None') {
+        } else if (m && chosen !== 'None') {
             await Soundtrack.stop();
         }
-        setMuted(!muted);
+        setMuted(m);
+        User.setMuted(m);
     }
 
     return (
@@ -89,7 +107,7 @@ const SoundControl = () => {
             <SoundsRow row={1} />
             <SoundsRow row={2} />
             <View style={{flexDirection: 'row', marginTop: 20, marginLeft: 10}}>
-                <TouchableOpacity style={styles.image} onPress={() => handleMute()}>
+                <TouchableOpacity style={styles.image} onPress={() => handleMute(!muted)}>
                     <Image source={volumeIcons[muted ? 'muted' : 'notMuted']} style={[styles.image, muted && {opacity: 0.7}]}/>
                 </TouchableOpacity>
                 <Slider
@@ -99,7 +117,7 @@ const SoundControl = () => {
                     onSlidingComplete={(vol) => storeVolume(vol)}
                     style={{width: 260, marginLeft: 10}}
                     minimumValue={0.05}
-                    maximumValue={1}
+                    maximumValue={chosen === 'Heartbeat' ? 0.9 : 1.0}
                     minimumTrackTintColor={Colors.purpleMid}
                     thumbTintColor={Colors.purpleMid}
                 />

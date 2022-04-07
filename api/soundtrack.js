@@ -17,6 +17,14 @@ class Soundtrack {
     async stop() {
         console.log('Stopping soundtrack');
         await api.call(`soundtrack/stop`, {method: 'POST'});
+        setTimeout(async () => {
+            await api.call(`soundtrack/clearStop`, {method: 'POST'});
+        }, 500)
+    }
+
+    async clearStop() {
+        console.log('Clearing stop soundtrack');
+        await api.call(`soundtrack/clearStop`, {method: 'POST'});
     }
 }
 
